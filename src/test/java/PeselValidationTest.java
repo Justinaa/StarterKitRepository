@@ -1,8 +1,5 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.fest.assertions.Assertions;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 
@@ -147,8 +144,7 @@ public class PeselValidationTest {
 	@Test
 	public void is11DigitsShouldReturnTrueForCorrectPesel() {
 		//given
-		pesel = peselWoman;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselWoman);
 				
 		//when
 		boolean result = peselValidation.is11Digits();
@@ -165,8 +161,7 @@ public class PeselValidationTest {
 	@Test
 	public void isCorrectShouldReturnTrueForCorrectPesel() {
 		//given
-		pesel = peselWoman;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselWoman);
 				
 		//when
 		boolean result = peselValidation.isCorrect();
@@ -211,28 +206,26 @@ public class PeselValidationTest {
 	@Test
 	public void getSexShouldReturnFemaleForWoman() {
 		//given
-		pesel = peselWoman;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselWoman);
 				
 		//when
-		String sex = peselValidation.getSex();
+		Sex sex = peselValidation.getSex();
 				
 		//then
-		Assertions.assertThat(sex).isEqualTo("female");
+		Assertions.assertThat(sex).isEqualTo(Sex.FEMALE);
 	}
 	
 	
 	@Test
 	public void getSexShouldReturnMaleForMan() {
 		//given
-		pesel = peselMan;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselMan);
 				
 		//when
-		String sex = peselValidation.getSex();
+		Sex sex = peselValidation.getSex();
 				
 		//then
-		Assertions.assertThat(sex).isEqualTo("male");
+		Assertions.assertThat(sex).isEqualTo(Sex.MALE);
 	}	
 	
 	//---------------------------------------------------------------------------
@@ -243,8 +236,7 @@ public class PeselValidationTest {
 	@Test
 	public void getDateOfBirthShouldReturn19900518ForYear1990() {
 		//given
-		pesel = peselWoman;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselWoman);
 				
 		//when
 		String date = peselValidation.getDateOfBirth();
@@ -312,19 +304,17 @@ public class PeselValidationTest {
 	//---------------------------------------------------------------------------
 	
 	
-	//---testing-getDateOfBirthAsDate()------------------------------------------
+	//---testing-getDateOfBirthAsDateTime()--------------------------------------
 	
 	@Test
-	public void getDateOfBirthAsDateShouldReturn22011220ForYear2201() throws ParseException {
+	public void getDateOfBirthAsDateTimeShouldReturn22011220ForYear2201() {
 		//given
-		pesel = "01722001358";
+		pesel = "01720201358";	//"2201.12.02"
 		peselValidation = new PeselValidation(pesel);
 				
 		//when
-		Date date = peselValidation.getDateOfBirthAsDate();
-		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateVerification = dateFormat.parse("2201.12.20");	
+		DateTime date = peselValidation.getDateOfBirthAsDateTime();
+		DateTime dateVerification = new DateTime(2201,12,2,0,0);	
 		
 		//then
 		Assertions.assertThat(date).isEqualTo(dateVerification);
@@ -336,17 +326,12 @@ public class PeselValidationTest {
 	//---testing-isAdult()-------------------------------------------------------
 	
 	@Test
-	public void isAdultShouldReturnTrueForAdult() throws ParseException {
+	public void isAdultShouldReturnTrueForAdult() {
 		//given
-		pesel = peselWoman;
-		peselValidation = new PeselValidation(pesel);
+		peselValidation = new PeselValidation(peselWoman);
 				
-		//when
-		String dateOfElectionString = "2015.01.02";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfElection = dateFormat.parse(dateOfElectionString);
-		
-		boolean isAdult = peselValidation.isAdult(dateOfElection);
+		//when		
+		boolean isAdult = peselValidation.isAdult();
 			
 		//then
 		Assertions.assertThat(isAdult).isEqualTo(true);
@@ -354,74 +339,16 @@ public class PeselValidationTest {
 	
 	
 	@Test
-	public void isAdultShouldReturnFalseForUnderAge() throws ParseException {
+	public void isAdultShouldReturnFalseForUnderAge() {
 		//given
 		pesel = "14312801358"; 		//"2014.11.28"
 		peselValidation = new PeselValidation(pesel);
 				
 		//when
-		String dateOfElectionString = "2015.01.02";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfElection = dateFormat.parse(dateOfElectionString);
-		
-		boolean isAdult = peselValidation.isAdult(dateOfElection);
+		boolean isAdult = peselValidation.isAdult();
 			
 		//then
 		Assertions.assertThat(isAdult).isEqualTo(false);
-	}
-	
-	
-	@Test
-	public void isAdultShouldReturnTrueForAdultFromDateOfElection() throws ParseException {
-		//given
-		pesel = "14312801358"; 		//"2014.11.28"
-		peselValidation = new PeselValidation(pesel);
-				
-		//when
-		String dateOfElectionString = "2032.11.28";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfElection = dateFormat.parse(dateOfElectionString);
-		
-		boolean isAdult = peselValidation.isAdult(dateOfElection);
-			
-		//then
-		Assertions.assertThat(isAdult).isEqualTo(true);
-	}
-	
-	
-	@Test
-	public void isAdultShouldReturnFalseForAdultFromDateOfElectionPlus1() throws ParseException {
-		//given
-		pesel = "14312801358"; 		//"2014.11.28"
-		peselValidation = new PeselValidation(pesel);
-				
-		//when
-		String dateOfElectionString = "2032.11.27";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfElection = dateFormat.parse(dateOfElectionString);
-		
-		boolean isAdult = peselValidation.isAdult(dateOfElection);
-			
-		//then
-		Assertions.assertThat(isAdult).isEqualTo(false);
-	}
-	
-	
-	@Test
-	public void isAdultShouldReturnTrueForAdultFromDateOfElectionMinus1() throws ParseException {
-		//given
-		pesel = "14312801358"; 		//"2014.11.28"
-		peselValidation = new PeselValidation(pesel);
-				
-		//when
-		String dateOfElectionString = "2032.11.29";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfElection = dateFormat.parse(dateOfElectionString);
-		
-		boolean isAdult = peselValidation.isAdult(dateOfElection);
-			
-		//then
-		Assertions.assertThat(isAdult).isEqualTo(true);
 	}
 	
 	//---------------------------------------------------------------------------

@@ -15,7 +15,7 @@ public class PanelSelection extends JPanel {
 	
 	private ActionListener listenerRadioButton = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			selectedRadioButton = (JRadioButton) event.getSource(); 
+			selectedRadioButton = (JRadioButton) event.getSource();
 		}
 	};
 	

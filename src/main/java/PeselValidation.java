@@ -1,7 +1,6 @@
 import java.lang.Character;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import org.joda.time.DateTime;
 
 
 public class PeselValidation {
@@ -25,7 +24,7 @@ public class PeselValidation {
 		
 		for(int i = 0; i < length; i++) {
 			sign = pesel.charAt(i);
-			if(Character.isDigit(sign) == false) {
+			if(!Character.isDigit(sign)) {
 				return false;
 			}
 		}
@@ -69,13 +68,13 @@ public class PeselValidation {
 	}
 
 
-	public String getSex() {
+	public Sex getSex() {
 		int digitSex = toDigit(pesel.charAt(9));
 		
 		if(digitSex % 2 == 0) {
-			return "female";
+			return Sex.FEMALE;
 		} else {
-			return "male";
+			return Sex.MALE;
 		}
 	}
 
@@ -118,43 +117,31 @@ public class PeselValidation {
 	}
 
 
-	public Date getDateOfBirthAsDate() throws ParseException {
+	public DateTime getDateOfBirthAsDateTime() {
 		String dateString = getDateOfBirth();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date date = dateFormat.parse(dateString);		
-	
+		String yearString = dateString.substring(0,4);
+		String monthString = dateString.substring(5,7);
+		String dayString = dateString.substring(8,10); 
+		
+		int year = Integer.parseInt(yearString);
+		int month = Integer.parseInt(monthString);
+		int day = Integer.parseInt(dayString);		
+		
+		DateTime date = new DateTime(year,month,day,0,0); 
 		return date;	
 	}
-
-
-	public boolean isAdult(Date dateOfElection) throws ParseException {
-		String dateOfBirth = getDateOfBirth();		
-		String majority = getDateOfMajority(dateOfBirth);
-		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Date dateOfMajority = dateFormat.parse(majority);		
 	
-		if(dateOfMajority.after(dateOfElection) == true) {
-			return false;
-		} else {
+	
+	public boolean isAdult() {
+		DateTime dateOfBirth = getDateOfBirthAsDateTime();
+		DateTime dateOfMajority = dateOfBirth.plusYears(18);
+		DateTime dateOfElections = DateTime.now();
+		
+		if(dateOfMajority.isBefore(dateOfElections) || dateOfMajority.isEqual(dateOfElections)) {
 			return true;
-		}	
-	}
-	
-	
-	private String getDateOfMajority(String dateOfBirth) {
-		String yearOfBirth = dateOfBirth.substring(0,4); 
-		
-		int year1 = toDigit(yearOfBirth.charAt(0));
-		int year2 = toDigit(yearOfBirth.charAt(1));
-		int year3 = toDigit(yearOfBirth.charAt(2));
-		int year4 = toDigit(yearOfBirth.charAt(3));
-	
-		int year = 1000*year1 + 100*year2 + 10*year3 + year4;
-		int yearOfMajority = year + 18;
-		
-		String dateOfMajority = yearOfMajority + dateOfBirth.substring(4);
-		return dateOfMajority;
+		} else {
+			return false;
+		}
 	}
 	
 }
