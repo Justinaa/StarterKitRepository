@@ -1,10 +1,19 @@
 import javax.swing.*;
 
+import org.springframework.web.client.RestTemplate;
+
+
+
+import DAO.ZipCode;
+
+
 //import javax.swing.text.MaskFormatter;
 import java.awt.*; 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class PanelLogin extends JPanel {
@@ -33,6 +42,15 @@ public class PanelLogin extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		//---panelZipCode----------------------------------------------------------
+		
+
+		//---test-URL-----------------------------------------------------
+		RestTemplate restTemplate = new RestTemplate();
+		
+		List<ZipCode> object = Arrays.asList(restTemplate.getForObject("http://localhost:8080/StarterKitREST/test/zipCode/findAll", ZipCode[].class));
+       // System.out.println(object);
+		//----------------------------------------------------------------
+		
 		JPanel panelZipCode = new JPanel(new FlowLayout(FlowLayout.CENTER,30,30));
 		
 		label1 = new JLabel("Kod pocztowy");
