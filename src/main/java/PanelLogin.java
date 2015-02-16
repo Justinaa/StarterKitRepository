@@ -4,7 +4,10 @@ import org.springframework.web.client.RestTemplate;
 
 
 
+
+import restOperations.HttpRunner;
 import DAO.ZipCode;
+
 
 
 //import javax.swing.text.MaskFormatter;
@@ -41,28 +44,22 @@ public class PanelLogin extends JPanel {
 		setSize(this.width,this.height);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		//---panelZipCode----------------------------------------------------------
-		
-
-		//---test-URL-----------------------------------------------------
-		RestTemplate restTemplate = new RestTemplate();
-		
-		List<ZipCode> object = Arrays.asList(restTemplate.getForObject("http://localhost:8080/StarterKitREST/test/zipCode/findAll", ZipCode[].class));
-       // System.out.println(object);
-		//----------------------------------------------------------------
-		
+		//---panelZipCode----------------------------------------------------------		
 		JPanel panelZipCode = new JPanel(new FlowLayout(FlowLayout.CENTER,30,30));
 		
 		label1 = new JLabel("Kod pocztowy");
 		panelZipCode.add(label1);
 		
 		comboBox = new JComboBox<String>();
-		//---przykład----------------------------
-		comboBox.addItem("52-310");
-		comboBox.addItem("52-320");
-		comboBox.addItem("52-330");
-		comboBox.addItem("52-340");
-		//---------------------------------------	
+		
+		//-----------------------------------------------
+		String[] zipCodeTab = HttpRunner.getZipCodeTab();
+		
+		for(int i = 0; i < zipCodeTab.length; i++) {
+			comboBox.addItem(zipCodeTab[i]);
+		}
+		//-----------------------------------------------
+			
 		panelZipCode.add(comboBox);
 		
 		add(panelZipCode);
